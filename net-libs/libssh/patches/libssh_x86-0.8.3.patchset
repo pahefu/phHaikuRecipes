@@ -1,0 +1,26 @@
+From 99460279f67a1c0c8e1f4cb8ee06b31c12bbeaad Mon Sep 17 00:00:00 2001
+From: pahefu <pahefu@someemail.somedomain>
+Date: Mon, 24 Sep 2018 17:57:11 +0000
+Subject: Fix for Haiku
+
+
+diff --git a/src/connect.c b/src/connect.c
+index 69bdf7e..89c7c46 100644
+--- a/src/connect.c
++++ b/src/connect.c
+@@ -84,9 +84,9 @@
+ #include "libssh/session.h"
+ #include "libssh/poll.h"
+ 
+-#ifndef HAVE_GETADDRINFO
+-#error "Your system must have getaddrinfo()"
+-#endif
++//#ifndef HAVE_GETADDRINFO
++//#error "Your system must have getaddrinfo()"
++//#endif
+ 
+ #ifdef _WIN32
+ #ifndef gai_strerror
+-- 
+2.19.0
+
