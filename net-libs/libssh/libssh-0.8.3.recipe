@@ -1,0 +1,70 @@
+SUMMARY="A SSH library"
+DESCRIPTION="multiplatform C library implementing the SSHv2 and SSHv1 protocol on 
+client and server side "
+HOMEPAGE="https://www.libssh.org/"
+COPYRIGHT="Copyright 2003-2018 Aris Adamantiadis"
+LICENSE="LGPL"
+REVISION="1"
+SOURCE_URI="git://git.libssh.org/projects/libssh.git"
+SOURCE_DIR=""
+CHECKSUM_SHA256=""
+PATCHES="libssh$secondaryArchSuffix-$portVersion.patchset"
+
+ARCHITECTURES="!x86_gcc2 x86 !x86_64"
+SECONDARY_ARCHITECTURES="x86"
+
+PROVIDES="
+	libssh$secondaryARchSuffix = $portVersion
+	lib:libssh$secondaryArchSuffix = $portVersion
+	"
+REQUIRES="
+	haiku$secondaryArchSuffix
+	lib:libcrypto$secondaryArchSuffix
+	lib:libssl$secondaryArchSuffix
+	lib:libz$secondaryArchSuffix
+	"
+
+PROVIDES_devel="
+	libssh${secondaryArchSuffix}_devel = $portVersion
+	devel:libssh$secondaryArchSuffix = $portVersion
+	"
+
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	devel:libcrypto$secondaryArchSuffix
+	devel:libssl$secondaryArchSuffix
+	devel:libz$secondaryArchSuffix
+	"
+BUILD_PREREQUIRES="
+	cmd:gcc$secondaryArchSuffix
+	cmd:cmake
+	cmd:make
+	"
+
+BUILD()
+{
+	mkdir -p build && cd build
+
+        cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_BUILD_TYPE=release ..
+        make $jobArgs
+}
+
+INSTALL()
+{
+        make -C build install
+
+        mkdir -p $includeDir
+        mv $prefix/include/* $includeDir
+        rmdir $prefix/include
+
+        if [ -n "$secondaryArchSuffix" ]; then
+                mv $prefix/lib $prefix/lib2
+                mkdir -p $libDir
+                mv $prefix/lib2/* $libDir/
+                rmdir $prefix/lib2
+        fi
+	prepareInstalledDevelLibs libssh
+        packageEntries devel \
+                $developDir
+}
+
