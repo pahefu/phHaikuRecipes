@@ -1,0 +1,75 @@
+SUMMARY="Advanced key-value store"
+DESCRIPTION="Redis is an open source, advanced key-value store. It is often \
+referred to as a data structure server since keys can contain strings, hashes,\
+ lists, sets and sorted sets."
+HOMEPAGE="https://redis.io/"
+COPYRIGHT="2009-2018 Salvatore Sanfilippo"
+LICENSE="BSD (3-clause)"
+REVISION="1"
+SOURCE_URI="git://github.com/antirez/redis.git#6c8a8f2eb7b27b992554b86cd9a93fa6$
+SOURCE_DIR=""
+CHECKSUM_SHA256="6c8a8f2eb7b27b992554b86cd9a93fa6c31b2fcc"
+PATCHES="redis-5.0.patchset"
+
+ARCHITECTURES="?x86_gcc2 x86 !x86_64 !arm !ppc"
+SECONDARY_ARCHITECTURES="x86"
+
+commandSuffix=$secondaryArchSuffix
+commandBinDir=$binDir
+if [ "$targetArchitecture" = x86_gcc2 ]; then
+        commandSuffix=
+        commandBinDir=$prefix/bin
+        DISABLE_SOURCE_PACKAGE="yes"
+fi
+
+
+PROVIDES="
+	redis$secondaryArchSuffix = $portVersion
+        cmd:redis_benchmark$secondaryArchSuffix = $portVersion
+        cmd:redis_check_aof$secondaryArchSuffix = $portVersion
+        cmd:redis_check_rdb$secondaryArchSuffix = $portVersion
+        cmd:redis_cli$secondaryArchSuffix = $portVersion
+        cmd:redis_sentinel$secondaryArchSuffix = $portVersion
+        cmd:redis_server$secondaryArchSuffix = $portVersion
+        "
+
+REQUIRES="
+        haiku$secondaryArchSuffix
+        "
+
+BUILD_REQUIRES="
+        cmd:aclocal
+        cmd:autoconf
+        cmd:awk
+        cmd:gcc$secondaryArchSuffix
+        cmd:make
+        "
+
+BUILD_PREREQUIRES="
+        haiku_x86_devel
+        cmd:autoconf
+        cmd:make
+        cmd:gcc_x86
+        cmd:ld$secondaryArchSuffix
+        "
+
+BUILD()
+{
+        echo ">> Building linenoise"
+        cd deps/linenoise && make CC=cc-x86 CCX=g++-x86 LDFLAGS=-lnetwork -lbsd
+        echo ">> Building hiredis"
+        cd ../../deps/hiredis && make CC=cc-x86 CCX=g++-x86 LDFLAGS=-lnetwork -$
+
+        echo ">> Building lua"
+        cd ../../deps/lua && make posix CC=cc-x86 CCX=g++-x86
+
+        echo ">> Building redis"
+        cd ../../ && make 32bit CC=cc-x86 CCX=g++-x86
+}
+
+INSTALL()
+{
+        echo ">> Running make install"
+        make install INSTALL_BIN=$binDir
+}
+
