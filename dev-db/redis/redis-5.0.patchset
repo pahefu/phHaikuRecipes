@@ -1,0 +1,33 @@
+From 099ced71c154b37aac17736492b81a471c3cc41c Mon Sep 17 00:00:00 2001
+From: Pahefu <pahefu@someemail.domain>
+Date: Thu, 20 Sep 2018 10:36:57 +0000
+Subject: Added support for Haiku
+
+
+diff --git a/src/Makefile b/src/Makefile
+index 773d3b2..04d3672 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -97,6 +97,11 @@ else
+ ifeq ($(uname_S),FreeBSD)
+ 	# FreeBSD
+ 	FINAL_LIBS+= -lpthread
++else
++ifeq ($(uname_S),Haiku)
++	# Haiku
++	FINAL_LDFLAGS+= -export-dynamic
++	FINAL_LIBS+= -lnetwork -lbsd
+ else
+ 	# All the other OSes (notably Linux)
+ 	FINAL_LDFLAGS+= -rdynamic
+@@ -106,6 +111,7 @@ endif
+ endif
+ endif
+ endif
++endif
+ # Include paths to dependencies
+ FINAL_CFLAGS+= -I../deps/hiredis -I../deps/linenoise -I../deps/lua/src
+ 
+-- 
+2.19.0
+
