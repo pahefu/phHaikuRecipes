@@ -1,0 +1,64 @@
+SUMMARY="A Haiku cc and cpp proxy"
+DESCRIPTION="Just a proxy to skip non compatible libraries, and add custom ones"
+HOMEPAGE=""
+COPYRIGHT="2018 Pahefu"
+LICENSE="MIT"
+REVISION="1"
+SOURCE_URI="git://github.com/pahefu/hacc.git#62599405da0ebb641f1a12dd76de5d9ca81b6853"
+SOURCE_DIR=""
+
+ARCHITECTURES="?x86_gcc2 x86 !x86_64 !arm !ppc"
+SECONDARY_ARCHITECTURES="x86"
+
+commandSuffix=$secondaryArchSuffix
+commandBinDir=$binDir
+if [ "$targetArchitecture" = x86_gcc2 ]; then
+	commandSuffix=
+	commandBinDir=$prefix/bin
+	DISABLE_SOURCE_PACKAGE="yes"
+fi
+
+PROVIDES="
+	hacc$secondaryArchSuffix = $portVersion
+	cmd:hacc_conf$secondaryArchSuffix = $portVersion
+	cmd:hacc$secondaryArchSuffix = $portVersion
+	cmd:hac++$secondaryArchSuffix = $portVersion
+	cmd:hacpp$secondaryArchSuffix = $portVersion
+	cmd:hagcc$secondaryArchSuffix = $portVersion
+	cmd:hag++$secondaryArchSuffix = $portVersion
+	"
+
+REQUIRES="
+	haiku$secondaryArchSuffix
+	"
+
+BUILD_REQUIRES="
+	cmd:aclocal
+	cmd:autoconf
+	cmd:awk
+	cmd:gcc$secondaryArchSuffix
+	cmd:make
+	"
+
+BUILD_PREREQUIRES="
+	haiku$secondaryArchSuffix_devel
+	cmd:autoconf
+	cmd:make
+	cmd:gcc$secondaryArchSuffix
+	cmd:python
+	cmd:ld$secondaryArchSuffix	
+	"
+
+BUILD()
+{
+	echo ">> Make-ing the binaries"
+	cd src
+	make
+}
+
+INSTALL()
+{
+	echo ">> Running make install"
+	cd src
+	make install INSTALL_BIN=$binDir
+}
