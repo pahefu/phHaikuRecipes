@@ -41,8 +41,8 @@ REQUIRES="
 	lib:libpixman_1$secondaryArchSuffix
 	lib:libpng16$secondaryArchSuffix
 	lib:libz$secondaryArchSuffix
-	glib2$secondaryArchSuffix
-	gettext_x86_libintl
+	lib:libglib_2.0$secondaryArchSuffix
+	lib:libintl$secondaryArchSuffix
 	"
 
 PROVIDES_devel="
@@ -64,8 +64,7 @@ BUILD_REQUIRES="
 	devel:libpixman_1$secondaryArchSuffix
 	devel:libpng16$secondaryArchSuffix
 	devel:libz$secondaryArchSuffix
-
-	glib2_x86_devel
+	devel:libglib_2.0$secondaryArchSuffix
 	"
 BUILD_PREREQUIRES="
 	cmd:aclocal
