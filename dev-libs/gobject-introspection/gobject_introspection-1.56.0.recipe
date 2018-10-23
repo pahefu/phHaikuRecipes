@@ -1,0 +1,81 @@
+SUMMARY="Introspection system for GObject-based libraries"
+DESCRIPTION="Introspection system for GObject-based libraries (...)"
+HOMEPAGE="https://wiki.gnome.org/Projects/GObjectIntrospection"
+COPYRIGHT="1999-2018 Gnome Project"
+LICENSE="GNU LGPL v2.1
+GNU GPL v2"
+REVISION="1"
+SOURCE_URI="https://github.com/GNOME/gobject-introspection/archive/$portVersion.tar.gz"
+SOURCE_DIR="gobject-introspection-1.56.0"
+CHECKSUM_SHA256="dbf222ad56bc0f5a3b6cfc7be07b4b7c9a7e3a65761d5969b9fc800327c88312"
+DISABLE_SOURCE_PACKAGE="yes"
+
+ARCHITECTURES="x86_gcc2 x86 x86_64"
+SECONDARY_ARCHITECTURES="x86"
+
+PROVIDES="
+	gobject_introspection$secondaryArchSuffix = $portVersion
+	cmd:g_ir_scanner$secondaryArchSuffix = $portVersion
+	cmd:g_ir_inspect$secondaryArchSuffix = $portVersion
+	cmd:g_ir_generate$secondaryArchSuffix = $portVersion
+	cmd:g_ir_compiler$secondaryArchSuffix = $portVersion
+	cmd:g_ir_annotation_tool$secondaryArchSuffix = $portVersion
+	lib:libgirepository_1.0$secondaryArchSuffix = $portVersion
+	"
+REQUIRES="
+	haiku$secondaryArchSuffix
+	lib:libgio_2.0$secondaryArchSuffix
+	lib:libglib_2.0$secondaryArchSuffix
+	lib:libffi$secondaryArchSuffix
+	gettext${secondaryArchSuffix}_libintl
+	"
+
+PROVIDES_devel="
+	gobject_introspection${secondaryArchSuffix}_devel = $portVersion
+	devel:libgirepository_1.0${secondaryArchSuffix} = $portVersion	
+	"
+
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	flex
+	gtk_doc
+	bison$secondaryArchSuffix
+	devel:libglib_2.0$secondaryArchSuffix
+	"
+BUILD_PREREQUIRES="
+	cmd:aclocal
+	cmd:autoreconf
+	cmd:which
+	cmd:automake
+	cmd:gcc$secondaryArchSuffix
+	cmd:ld$secondaryArchSuffix
+	cmd:pkg_config$secondaryArchSuffix
+	cmd:make
+	cmd:libtoolize$secondaryArchSuffix
+	python_x86"
+
+BUILD()
+{
+	./autogen.sh
+	runConfigure ./configure
+	make $jobArgs
+}
+
+INSTALL()
+{
+	make install
+
+	rm $libDir/libgirepository*.*a
+
+	
+	prepareInstalledDevelLibs libgirepository-1.0
+	fixPkgconfig
+
+	packageEntries devel \
+		$developDir
+}
+
+TEST()
+{
+	make check
+}
