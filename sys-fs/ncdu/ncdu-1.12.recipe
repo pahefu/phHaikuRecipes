@@ -1,0 +1,54 @@
+SUMMARY="Disk usage analyzer with an ncurses interface"
+DESCRIPTION="Ncdu is a disk usage analyzer with an ncurses interface. It is designed to find space hogs on a remote server where you don't have an entire graphical setup available, but it is a useful tool even on regular desktop systems. Ncdu aims to be fast, simple and easy to use, and should be able to run in any minimal POSIX-like environment with ncurses installed."
+HOMEPAGE="https://dev.yorhel.nl/ncdu"
+COPYRIGHT="2007-2018 Yoran Heling"
+LICENSE="MIT"
+REVISION="1"
+SOURCE_URI="https://dev.yorhel.nl/download/ncdu-$portVersion.tar.gz"
+CHECKSUM_SHA256="820e4e4747a2a2ec7a2e9f06d2f5a353516362c22496a10a9834f871b877499a"
+DISABLE_SOURCE_PACKAGE="yes"
+
+ARCHITECTURES="!x86_gcc2 x86 x86_64"
+SECONDARY_ARCHITECTURES="x86"
+
+PROVIDES="
+	ncdu$secondaryArchSuffix = $portVersion compat >= 1
+	cmd:ncdu$secondaryArchSuffix
+	"
+REQUIRES="
+	haiku$secondaryArchSuffix
+	ncurses$secondaryArchSuffix
+	"
+
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	ncurses${secondaryArchSuffix}_devel
+	"
+
+BUILD_PREREQUIRES="
+	cmd:aclocal
+	cmd:autoconf
+	cmd:gcc$secondaryArchSuffix
+	cmd:ld$secondaryArchSuffix
+	cmd:make
+	cmd:pkg_config$secondaryArchSuffix
+	"
+
+BUILD()
+{
+	runConfigure ./configure
+	make $jobArgs
+}
+
+INSTALL()
+{
+
+	make install
+
+#
+#	prepareInstalledDevelLibs libcairo libcairo-script-interpreter libcairo-gobject
+#	fixPkgconfig
+
+#	packageEntries devel \
+#		$developDir
+}
