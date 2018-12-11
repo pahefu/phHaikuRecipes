@@ -1,0 +1,35 @@
+From 276de22c5f7c9641bf73e46c2efb8e19f6ce992f Mon Sep 17 00:00:00 2001
+From: pahefu <pahefu@gmail.com>
+Date: Tue, 11 Dec 2018 13:05:38 +0000
+Subject: Haiku patch
+
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0d27833..421d929 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -126,6 +126,8 @@ if(CMAKE_HOST_APPLE)
+   set(_data_dest_dir bin/${_bundle_bin}/../Resources)
+ elseif(ANDROID)
+   set(_data_dest_dir android/assets)
++elseif(HAIKU)
++  set(_data_dest_dir data/${GCOMPRIS_EXECUTABLE_NAME})
+ else()
+   set(_data_dest_dir share/${GCOMPRIS_EXECUTABLE_NAME})
+ endif()
+diff --git a/cmake/rcc.cmake b/cmake/rcc.cmake
+index f5479d8..e4e2b10 100644
+--- a/cmake/rcc.cmake
++++ b/cmake/rcc.cmake
+@@ -47,7 +47,7 @@ function(GCOMPRIS_ADD_RCC resource_path)
+   if(CMAKE_HOST_APPLE)
+     install(FILES ${CREATED_RCC} DESTINATION ${GCOMPRIS_EXECUTABLE_NAME}.app/Contents/MacOS/rcc)
+   else()
+-    install(FILES ${CREATED_RCC} DESTINATION share/${GCOMPRIS_EXECUTABLE_NAME}/rcc)
++    install(FILES ${CREATED_RCC} DESTINATION ${_data_dest_dir}/rcc)
+   endif()
+ 
+   add_custom_target(
+-- 
+2.19.1
+
